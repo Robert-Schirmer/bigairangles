@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { Container, makeStyles, Grid } from '@material-ui/core';
 import Copyright from './Copyright';
 import Navigation from './Navigation';
+import pack from '../package.json';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -54,6 +55,11 @@ export default function Layout(props) {
                 </Grid>
                 <Grid item>
                     <Copyright />
+                </Grid>
+                <Grid item>
+                    <Typography variant='caption'>
+                        v{pack.version}
+                    </Typography>
                 </Grid>
             </Grid>
         </div>
