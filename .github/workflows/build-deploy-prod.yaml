@@ -12,8 +12,10 @@ jobs:
         uses: actions/checkout@master
 
       - name: Create env file
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
-          "${{ secrets.ENV_FILE }}" > .env
+          echo $ENV_FILE | base64 --decode > .env
 
       # Setup gcloud CLI
       - name: Set up Cloud auth
