@@ -15,11 +15,7 @@ jobs:
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
-          echo $ENV_FILE | base64 --decode > .env.prod
-
-      - name: List files
-        run: |
-          ls -a
+          echo $ENV_FILE | base64 --decode > .env.production
 
       # Setup gcloud CLI
       - name: Set up Cloud auth
