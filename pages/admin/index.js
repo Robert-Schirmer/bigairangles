@@ -1,9 +1,9 @@
 import React from 'react';
-import Layout from '../components/Layout';
+import Layout from '../../components/Layout';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
-import AddImage from '../components/AddImage';
-import ManageForms from '../components/ManageForms';
-import { ManageIcon } from '../src/icons';
+import AddImage from '../../components/AddImage';
+import ManageForms from '../../components/ManageForms';
+import { ManageIcon } from '../../src/icons';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,9 +34,9 @@ export default function Manage() {
         <Grid item container justify='center' direction='row' >
           <AddImage />
         </Grid>
-        <Grid item container justify='center' direction='row' >
+        {/* <Grid item container justify='center' direction='row' >
           <ManageForms />
-        </Grid>
+        </Grid> */}
         {/* Maybe add an activity section? */}
       </Grid >
     </Layout >
