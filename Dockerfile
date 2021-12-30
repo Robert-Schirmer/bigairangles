@@ -13,7 +13,7 @@ COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 # Download cloud proxy script make executable
 RUN wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy \
-    && chmod +x cloud_sql_proxy
+  && chmod +x cloud_sql_proxy
 RUN npm run build
 
 # Production image, copy all the files and run next
@@ -48,4 +48,4 @@ ENV CLOUD_SQL_INSTANCE=""
 # Uncomment the following line in case you want to disable telemetry.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-ENTRYPOINT [ "./start-prod" ]
+ENTRYPOINT [ "sh", "-c", "./cloud_sql_proxy -instances=prismatic-age-287921:us-central1:big-air-data=tcp:3306 & npm start" ]
