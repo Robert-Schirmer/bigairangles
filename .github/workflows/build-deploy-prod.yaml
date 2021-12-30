@@ -7,6 +7,15 @@ jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
+    env:
+      # Tag for the docker build image
+      BUILD_TAG: gcr.io/prismatic-age-287921/prod-big-air
+      # Cloud sql instance for cloud sql proxy to connect to inside in the container
+      CLOUD_SQL_INSTANCE: prismatic-age-287921:us-central1:big-air-data
+      # Instance of the cloud run to deploy to
+      CLOUD_RUN_INSTANCE: prod-big-air
+      # Cloud project ID
+      GCP_PROJECT_ID: prismatic-age-287921
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -35,12 +44,12 @@ jobs:
       # Build and publish the image
       - name: Build & Publish
         run: |
-          gcloud config set project ${{ secrets.GCP_PROJECT }}
+          gcloud config set project $GCP_PROJECT_ID
           gcloud builds submit --config=cloudbuild.yaml \
-          --substitutions=_CLOUD_SQL_INSTANCE=prismatic-age-287921:us-central1:big-air-data,_TAG=gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
+          --substitutions=_CLOUD_SQL_INSTANCE=$CLOUD_SQL_INSTANCE,_TAG=$BUILD_TAG
           gcloud config set run/region us-central1
 
       # Deploy the Docker image to the cloud run instance
       - name: Deploy
         run: |
-          gcloud run deploy ${{ secrets.GCP_APPLICATION }} --image gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
+          gcloud run deploy $CLOUD_RUN_INSTANCE --image $BUILD_TAG

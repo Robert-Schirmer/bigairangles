@@ -41,8 +41,9 @@ EXPOSE 3000
 ENV PORT 3000
 
 # Transfer the arg to env variable to be run in entry point
+# Env variable will override arg
 ARG CLOUD_SQL_INSTANCE
-ENV CLOUD_SQL_INSTANCE_ENV=${CLOUD_SQL_INSTANCE}
+ENV CLOUD_SQL_INSTANCE=${CLOUD_SQL_INSTANCE}
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -50,4 +51,4 @@ ENV CLOUD_SQL_INSTANCE_ENV=${CLOUD_SQL_INSTANCE}
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 # Start cloud sql proxy to allow docker container to connect to cloud sql instance
-ENTRYPOINT [ "sh", "-c", "./cloud_sql_proxy -instances=$CLOUD_SQL_INSTANCE_ENV=tcp:3306 & npm start" ]
+ENTRYPOINT [ "sh", "-c", "./cloud_sql_proxy -instances=$CLOUD_SQL_INSTANCE=tcp:3306 & npm start" ]
