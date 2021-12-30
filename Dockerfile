@@ -11,6 +11,9 @@ FROM node:14-alpine AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
+# Download cloud proxy script make executable
+RUN wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy \
+  && chmod +x cloud_sql_proxy
 RUN npm run build
 
 # Production image, copy all the files and run next
@@ -24,6 +27,8 @@ RUN adduser -S nextjs -u 1001
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/.env.production ./
+COPY --from=builder /app/cloud_sql_proxy ./cloud_sql_proxy
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
@@ -35,9 +40,15 @@ EXPOSE 3000
 
 ENV PORT 3000
 
+# Transfer the arg to env variable to be run in entry point
+# Env variable will override arg
+ARG CLOUD_SQL_INSTANCE
+ENV CLOUD_SQL_INSTANCE=${CLOUD_SQL_INSTANCE}
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-CMD ["npm", "start"]
+# Start cloud sql proxy to allow docker container to connect to cloud sql instance
+ENTRYPOINT [ "sh", "-c", "./cloud_sql_proxy -instances=$CLOUD_SQL_INSTANCE=tcp:3306 & npm start" ]

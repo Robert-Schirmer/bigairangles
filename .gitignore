@@ -3,9 +3,15 @@
 # dependencies
 /node_modules
 
+# Cloud sql proxy connection
+cloud_sql_proxy
+
 # misc
 .DS_Store
 .env
+# Base64 encoding of env created from running 'npm run base64-env'
+# Used to store secrets for build
+.env.base64
 .env.local
 .env.development.local
 .env.test.local

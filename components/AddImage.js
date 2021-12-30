@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Grid, makeStyles, Typography, Button } from '@material-ui/core';
 import TextField from '../components/TextField';
-import axios from 'axios';
 import LoadingIcon from '../components/LoadingIcon';
-import { baseurl } from '../site.config';
-import { addImage } from './functions/requests';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles(theme => ({
   srcinputcont: {
@@ -21,10 +18,10 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 200,
     paddingBottom: 20,
     margin: '0px 15px'
-  }
+  },
 }));
 
-const metarow = { label: '', value: '' };
+const emptyMetaRow = { label: '', value: '' };
 const defaultmetarows = [
   {
     label: 'Location',
@@ -41,14 +38,14 @@ const defaultmetarows = [
 ]
 export default function AddImage() {
   const classes = useStyles();
-  const [metarows, setMetaRows] = useState([{ ...metarow }]);
+  const [metarows, setMetaRows] = useState([{ ...emptyMetaRow }]);
   const [src, setSrc] = useState('');
-  const [response, setResponse] = useState('');
+  const [message, setMessage] = useState('');
   const router = useRouter();
 
   const handleMetaRowAdd = () => {
     setMetaRows(metarows => {
-      metarows.push(metarow);
+      metarows.push(emptyMetaRow);
       return [...metarows];
     })
   }
@@ -66,37 +63,45 @@ export default function AddImage() {
   }
 
   const handleSrcChange = (event) => {
-    const newvalue = event.target.value;  //event.target.value must be outside of setState!
+    const newvalue = event.target.value;
     setSrc(newvalue);
   }
 
   const resetFields = () => {
     setSrc('');
-    setMetaRows([{ ...metarow }]);
+    setMetaRows([{ ...emptyMetaRow }]);
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     //Get image_config
     if (src === '') {
-      return setResponse("Enter src");
+      return setMessage("Enter src");
     }
     if (!src.includes('.') || src.includes(' ')) {
-      return setResponse("Invalid image format, needs extension and no spaces");
+      return setMessage("Invalid image format, needs extension and no spaces");
     }
-    setResponse('loading');
+    setMessage('loading');
 
-    const pass = router.query.pass;
-    addImage(pass, src, metarows, callback);
+    const response = await fetch('/api/admin/images/add', {
+      method: 'PUT',
+      body: JSON.stringify({
+        src,
+        meta: metarows.filter((metarow) => metarow.value && metarow.label),
+      })
+    });
 
-    function callback(response) {
-      if (response === 'success') {
-        setResponse("Image " + src + " added");
-        resetFields();
+    if (response.status !== 200) {
+      if (response.status === 403) {
+        router.push('/login');
+        return;
       }
-      else {
-        setResponse(response);
-      }
+      // Error adding image
+      setMessage('Error')
+      return;
     }
+
+    setMessage(`Image ${src} added`);
+    resetFields();
   }
 
   return (
@@ -111,7 +116,7 @@ export default function AddImage() {
       </Grid>
       <Grid item container direction='column' xs={6} className={classes.metainputcont}>
         {metarows.map((metarow, index) => (
-          <Grid item container direction='row' xs={12} key={index}>
+          <Grid item container direction='row' key={index}>
             <Grid item container justify='flex-end' xs={6}>
               <TextField label='label' className={classes.textinput} value={metarow.label} onChange={(event) => handleMetaChange(event, index, 'label')} />
             </Grid>
@@ -120,13 +125,15 @@ export default function AddImage() {
             </Grid>
           </Grid>
         ))}
-        <Grid item container xs={12} justify='center'>
-          <Button variant="outlined" color='secondary' style={{ margin: 10 }} onClick={handleSetDefaultMeta}>
-            Default
-          </Button>
-          <Button variant="outlined" color='secondary' style={{ margin: 10 }} onClick={handleMetaRowAdd}>
-            Add Row
-          </Button>
+        <Grid item container direction='row' justify='center'>
+          <Grid item>
+            <Button variant="outlined" color='secondary' style={{ margin: 10 }} onClick={handleSetDefaultMeta}>
+              Default
+            </Button>
+            <Button variant="outlined" color='secondary' style={{ margin: 10 }} onClick={handleMetaRowAdd}>
+              Add Row
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
       <Grid item container xs={12} alignItems='center' direction='column'>
@@ -137,11 +144,11 @@ export default function AddImage() {
         </Grid>
         <Grid item>
           {
-            response === 'loading' ?
+            message === 'loading' ?
               <LoadingIcon />
               :
               <Typography variant='body1' className={classes.responsecont}>
-                {response}
+                {message}
               </Typography>
           }
         </Grid>

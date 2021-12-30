@@ -1,0 +1,15 @@
+steps:
+  # Build the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--tag",
+        "${_TAG}",
+        "--build-arg",
+        "CLOUD_SQL_INSTANCE=${_CLOUD_SQL_INSTANCE}",
+        ".",
+      ]
+
+images:
+  - $_TAG
