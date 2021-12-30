@@ -41,7 +41,7 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-# Transfer the arg to env variable
+# Transfer the arg to env variable to be run during entry point
 ARG CLOUD_SQL_INSTANCE
 ENV CLOUD_SQL_INSTANCE_ENV=$CLOUD_SQL_INSTANCE
 
@@ -50,4 +50,5 @@ ENV CLOUD_SQL_INSTANCE_ENV=$CLOUD_SQL_INSTANCE
 # Uncomment the following line in case you want to disable telemetry.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# Start cloud sql proxy to allow docker container to connect to cloud sql instance
 ENTRYPOINT [ "sh", "-c", "./cloud_sql_proxy -instances=${CLOUD_SQL_INSTANCE_ENV}=tcp:3306 & npm start" ]
