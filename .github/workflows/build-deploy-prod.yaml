@@ -11,7 +11,7 @@ jobs:
       # Tag for the docker build image
       BUILD_TAG: gcr.io/prismatic-age-287921/prod-big-air
       # Cloud sql instance for cloud sql proxy to connect to inside in the container
-      CLOUD_SQL_INSTANCE: prismatic-age-287921:us-central1:big-air-data
+      CLOUD_SQL_INSTANCE: prismatic-age-287921:us-central1:data-big-air
       # Instance of the cloud run to deploy to
       CLOUD_RUN_INSTANCE: prod-big-air
       # Cloud project ID
