@@ -43,7 +43,7 @@ ENV PORT 3000
 
 # Transfer the arg to env variable to be run in entry point
 ARG CLOUD_SQL_INSTANCE
-ENV CLOUD_SQL_INSTANCE_ENV=$CLOUD_SQL_INSTANCE
+ENV CLOUD_SQL_INSTANCE_ENV=${CLOUD_SQL_INSTANCE}
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry

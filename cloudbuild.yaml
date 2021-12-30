@@ -4,8 +4,10 @@ steps:
     args:
       [
         "build",
-        "--tag=$_TAG",
-        '--build-arg="CLOUD_SQL_INSTANCE=$_CLOUD_SQL_INSTANCE"',
+        "--tag",
+        "${_TAG}",
+        "--build-arg",
+        "CLOUD_SQL_INSTANCE=${_CLOUD_SQL_INSTANCE}",
         ".",
       ]
 
