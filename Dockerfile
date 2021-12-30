@@ -11,6 +11,9 @@ FROM node:14-alpine AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
+# Download cloud proxy script make executable
+RUN wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy \
+    && chmod +x cloud_sql_proxy
 RUN npm run build
 
 # Production image, copy all the files and run next
@@ -19,15 +22,13 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
-RUN wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy \
-    && chmod +x cloud_sql_proxy
-
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/.env.production ./
+COPY --from=builder /app/cloud_sql_proxy ./cloud_sql_proxy
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
@@ -44,4 +45,4 @@ ENV PORT 3000
 # Uncomment the following line in case you want to disable telemetry.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-ENTRYPOINT [ "sh", "-c", "./cloud_sql_proxy -instances=prismatic-age-287921:us-central1:big-air-data=tcp:3306 & npm start" ]
+CMD ["npm", "start-cp"]
