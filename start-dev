@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sh -c ./cloud_sql_proxy -instances=${CLOUD_SQL_INSTANCE}=tcp:3306 & npm run dev

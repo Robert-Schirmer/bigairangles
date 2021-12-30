@@ -20,9 +20,6 @@
     "dev": "next -p 8080",
     "build": "next build",
     "start": "next start -p 8080",
-    "dev-cp": "sh -c 'npm run cloud-proxy' && npm run dev",
-    "start-cp": "sh -c 'npm run cloud-proxy' && npm run start",
-    "cloud-proxy": "./cloud_sql_proxy -instances=prismatic-age-287921:us-central1:big-air-data=tcp:3306 &",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
     "base64-env": "openssl base64 -A -in .env -out .env.base64"
   }

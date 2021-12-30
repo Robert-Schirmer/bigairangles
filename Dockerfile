@@ -28,6 +28,7 @@ RUN adduser -S nextjs -u 1001
 # You only need to copy next.config.js if you are NOT using the default configuration
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/.env.production ./
+COPY --from=builder /app/start-prod ./
 COPY --from=builder /app/cloud_sql_proxy ./cloud_sql_proxy
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
@@ -40,9 +41,11 @@ EXPOSE 3000
 
 ENV PORT 3000
 
+ENV CLOUD_SQL_INSTANCE=""
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-CMD ["npm", "start-cp"]
+ENTRYPOINT [ "./start-prod" ]
