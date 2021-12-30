@@ -41,11 +41,13 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-ENV CLOUD_SQL_INSTANCE=""
+# Transfer the arg to env variable
+ARG CLOUD_SQL_INSTANCE
+ENV CLOUD_SQL_INSTANCE_ENV=$CLOUD_SQL_INSTANCE
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-ENTRYPOINT [ "sh", "-c", "./cloud_sql_proxy -instances=prismatic-age-287921:us-central1:big-air-data=tcp:3306 & npm start" ]
+ENTRYPOINT [ "sh", "-c", "./cloud_sql_proxy -instances=${CLOUD_SQL_INSTANCE_ENV}=tcp:3306 & npm start" ]

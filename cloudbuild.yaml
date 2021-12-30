@@ -1,0 +1,11 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--tag=gcr.io/$PROJECT_ID/$BUILD_ID",
+        '--build-arg="CLOUD_SQL_INSTANCE=$_CLOUD_SQL_INSTANCE"',
+        ".",
+      ]
+images:
+  - gcr.io/$PROJECT_ID/$BUILD_ID
