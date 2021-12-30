@@ -1,25 +1,20 @@
-# Next.js example
+# Setup
 
-## How to use
+## Database connection:
 
-Download the example [or clone the repo](https://github.com/mui-org/material-ui):
+Use the `db.sql` script to setup a local database and configure your `.env` file to point to it.
 
-```sh
-curl https://codeload.github.com/mui-org/material-ui/tar.gz/master | tar -xz --strip=2  material-ui-master/examples/nextjs
-cd nextjs
-```
+Or connect to the remote database
 
-Install it and run:
+Login to gcloud CLI using `gcloud config set account ${account_email}`. Select the correct cloud project using `gcloud config set account ${account_email}`. Download the gcloud proxy script to connect to the MySQL cloud instance and start it before running the project https://cloud.google.com/sql/docs/mysql/connect-admin-proxy?authuser=4#install.
 
+
+## Install project dependencies and run:
 ```sh
 npm install
 npm run dev
 ```
 
-or:
+# Env Deploy
 
-[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/mui-org/material-ui/tree/master/examples/nextjs)
-
-## The idea behind the example
-
-[Next.js](https://github.com/zeit/next.js) is a framework for server-rendered React apps.
+Env is stored in secrets as a base64 encoded string. Create the string from a local `.env` file by running `npm run base64-env` and save the output from the file `.env.base64` to the `ENV_FILE` secret.
