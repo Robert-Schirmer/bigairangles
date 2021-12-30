@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 
+# Cloud sql proxy connection
+cloud_sql_proxy
+
 # misc
 .DS_Store
 .env
