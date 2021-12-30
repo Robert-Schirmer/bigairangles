@@ -19,6 +19,9 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+RUN wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy \
+    && chmod +x cloud_sql_proxy
+
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 
@@ -41,4 +44,4 @@ ENV PORT 3000
 # Uncomment the following line in case you want to disable telemetry.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-CMD ["npm", "start"]
+ENTRYPOINT [ "sh", "-c", "/cloud_sql_proxy -instances=prismatic-age-287921:us-central1:big-air-data=tcp:3306 & npm start" ]
